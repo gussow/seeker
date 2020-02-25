@@ -1,0 +1,3 @@
+include seeker/models/model.h5
+include seeker/models/MatModel0.h5
+include seeker/models/MatModelPRO.h5

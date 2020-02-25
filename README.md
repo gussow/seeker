@@ -1,1 +1,83 @@
-# seeker-public
+![Seeker](seeker.png)
+Seeker is a python library for discriminating between bacterial and phage genomes.
+Seeker is based on an LSTM machine-learning model and does not rely on a reference genome,
+genomic alignment or any direct genome comparison. 
+
+## Overview 
+This file describes a python package that implements Seeker, an alignment-free discrimination between Bacterial vs. phages DNA sequences, based on a deep learning framework [1]. 
+This package can call classifiers that were trained with (a) either Python Keras LSTM with embedding layer, or (b) Matlab trained LSTM (no embedding) which was converted to a Keras model.
+
+## Citation
+Seeker: Alignment free phage identification via a deep learning framework. <i>In Preparation.</i>
+
+## Installation
+Seeker requires python3, and has been tested with python3.6 and python3.7. 
+Seeker can be installed using pip. From a terminal, run:
+
+`pip install seeker` 
+
+Or, if you are using conda:
+
+`conda install seeker`
+
+This will install Seeker and all of its dependencies. 
+
+## Usage
+The Seeker library consists of binaries that can be run from the command line and a python library that
+can be incorporated into Python scripts.
+
+### Binaries
+Seeker includes two binaries, one that predicts whether an entire sequence is bacterial or phage, and one
+that predicts prophages within a bacterial sequence.
+
+To predict whether sequences are bacterial or phage, run the following from the terminal:
+ 
+`predict-metagenome input.fa`
+
+This will output a prediction for each sequence in `input.fa` along with Seeker's score. Scores are between 0 and 1.
+Higher scores correspond to phage predictions while lower scores correspond to bacterial predictions. Sequences with 
+scores above 0.5 are predicted phages, while sequences with scores below 0.5 
+are predicted bacteria.  
+
+### Python Library
+The primary class in the Python library is SeekerFasta. SeekerFasta can load a Fasta file and score its entries using 
+Seeker. SeekerFasta has the following parameters:
+
+1. path_or_str. Either a path to a Fasta or a Fasta string. 
+2. LSTM_type. Which LSTM implementation to use. Options are "python", "matlab", "prophage". Default is Python.
+3. seeker_model. If you've already loaded a model into a SeekerModel object and prefer to use that model, you can
+provide it as a parameter here. Default is None, in which case the model will be loaded from file.  
+1. load_seqs. Whether to preload all Fasta sequences to memory. Default is True. 
+5. is_fasta_str. Set to True if you provided a Fasta string instead of a path to a Fasta file. Default is False. 
+
+Once a Fasta is loaded, there are several functions that can be used to generate Seeker predictions.
+For example, to predict whether the entries of a Fasta are phage or bacteria:
+```
+seeker_fasta = SeekerFasta("input.fa")
+predictions = seeker_fasta.phage_or_bacteria()  # This returns a list of phage/bacteria predictions for the Fasta
+print("\n".join(predictions))   # print predictions
+
+# To filter the Fasta file for predicted phage sequences, the following will
+# create a new fasta and save it to "seeker_phage_contigs.fa" with all sequences with 
+# a Seeker score of 0.5 and above (threshold can be adjusted per user goals)
+seeker_fasta.meta2fasta(out_fasta_path="seeker_phage_contigs.fa", threshold=0.5)
+```
+
+Alternatively, to predict prophages:
+```
+seeker_fasta = SeekerFasta("input.fa", model="prophage")
+seeker_fasta.save2bed("output.bed")  # Save prophage coordinates to BED file
+seeker_fasta.save2fasta("output.fa")  # Save prophage sequences to Fasta file 
+```
+<em>NOTE</em>: The ideal prophage prediction parameters vary depending on the organism and the user's goals.
+ 
+## LSTM Models
+The LSTM models can be found in the `models` directory. 
+1. model.h5. Metagenome LSTM model, trained in python using Keras.
+1. MatModel0.h5. Metagenome LSTM model, trained in matlab.
+1. MatModePRO.h5. Prophage LSTM model, trained in matlab.
+
+
+## Contact
+If you run into any issues or have any questions, feel free to open an issue on Github or email us 
+at either ayal.gussow@gmail.com or noamaus@gmail.com.

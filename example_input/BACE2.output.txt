@@ -1,0 +1,3 @@
+NZ_CP026026.1	Bacteria	0.26
+NZ_CP026027.1	Bacteria	0.26
+
