@@ -7,6 +7,14 @@ genomic alignment or any direct genome comparison.
 This file describes a python package that implements Seeker, an alignment-free discrimination between Bacterial vs. phages DNA sequences, based on a deep learning framework [1]. 
 This package can call classifiers that were trained with (a) either Python Keras LSTM with embedding layer, or (b) Matlab trained LSTM (no embedding) which was converted to a Keras model.
 
+If you have any trouble installing or using Seeker, please let us know by opening an issue on GitHub or emailing us 
+(either ayal.gussow@gmail.com or noamaus@gmail.com).
+
+<em>Note</em>: Seeker relies on tensorflow, which is not yet supported in python 3.8. Therefore, to use
+Seeker you need to use Python 3.6 or 3.7. Creating different Python environments is easy using conda 
+(https://docs.conda.io/en/latest/).
+ 
+
 ## Citation
 Seeker: Alignment free phage identification via a deep learning framework. <i>In Preparation.</i>
 
@@ -16,19 +24,30 @@ Seeker can be installed using pip. From a terminal, run:
 
 `pip install seeker` 
 
-Or, if you are using conda:
+This will install Seeker and all of its dependencies.
 
-`conda install seeker`
+## Installation using Conda
+Conda provides an easy method to install Seeker. First, install conda or miniconda
+(https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-This will install Seeker and all of its dependencies. 
+Then run the following commands to install seeker:
+```
+conda create --name seeker python=3.7 numpy=1.18 tensorflow=2.0.0 pip
+conda activate seeker
+pip install seeker
+```
+
+<em>Note</em>: If you rely on conda, any time you want to use Seeker's libraries or commands you have to first run:
+```
+conda activate seeker
+```
 
 ## Usage
 The Seeker library consists of binaries that can be run from the command line and a python library that
 can be incorporated into Python scripts.
 
 ### Binaries
-Seeker includes two binaries, one that predicts whether an entire sequence is bacterial or phage, and one
-that predicts prophages within a bacterial sequence.
+Seeker includes a binary that predicts whether an entire sequence is bacterial or phage.
 
 To predict whether sequences are bacterial or phage, run the following from the terminal:
  
@@ -53,6 +72,7 @@ provide it as a parameter here. Default is None, in which case the model will be
 Once a Fasta is loaded, there are several functions that can be used to generate Seeker predictions.
 For example, to predict whether the entries of a Fasta are phage or bacteria:
 ```
+from seeker import SeekerFasta
 seeker_fasta = SeekerFasta("input.fa")
 predictions = seeker_fasta.phage_or_bacteria()  # This returns a list of phage/bacteria predictions for the Fasta
 print("\n".join(predictions))   # print predictions
