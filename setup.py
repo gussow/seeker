@@ -46,7 +46,6 @@ setuptools.setup(
     entry_points = {
         'console_scripts': [
             'predict-metagenome=seeker.command_line:predict_metagenome',
-            'predict-prophages=seeker.command_line:predict_prophages',
         ],
     }
 )
