@@ -2,7 +2,7 @@ import setuptools
 from pkg_resources import DistributionNotFound, get_distribution
 
 INSTALL_DEPS = [
-    "numpy>=1.18"
+    "numpy>=1.17.3"
 ]
 
 
