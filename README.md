@@ -1,11 +1,11 @@
 ![Seeker](seeker.png)
 Seeker is a python library for discriminating between bacterial and phage genomes.
-Seeker is based on an LSTM machine-learning model and does not rely on a reference genome,
+Seeker is based on an LSTM deep-learning models and does not rely on a reference genome,
 genomic alignment or any direct genome comparison. 
 
 ## Overview 
 This file describes a python package that implements Seeker, an alignment-free discrimination between Bacterial vs. phages DNA sequences, based on a deep learning framework [1]. 
-This package can call classifiers that were trained with (a) either Python Keras LSTM with embedding layer, or (b) Matlab trained LSTM (no embedding) which was converted to a Keras model.
+This package can call classifiers that were trained with (a) either Python Keras LSTM with embedding layer, or (b) Matlab trained LSTM with a sequence imput layer, which was converted to a Keras model.
 
 If you have any trouble installing or using Seeker, please let us know by opening an issue on GitHub or emailing us 
 (either ayal.gussow@gmail.com or noamaus@gmail.com).
