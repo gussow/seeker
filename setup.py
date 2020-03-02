@@ -26,12 +26,12 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="seeker",
     version="0.0.1",
-    author="Ayal Gussow, Noam Auslander",
+    author="Ayal B. Gussow, Noam Auslander",
     author_email="ayal.gussow@gmail.com, noamaus@gmail.com",
     description="Predict bacterial or phage sequence",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="seeker.pythonanywhere.com",
+    url="http://seeker.pythonanywhere.com",
     include_package_data=True,
     packages=setuptools.find_packages(),
     classifiers=[
