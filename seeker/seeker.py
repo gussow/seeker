@@ -72,7 +72,9 @@ def pad_sequence(sequence, source_sequence, length=SEGMENT_LENGTH):
     assert len(sequence) < length, len(sequence)
     assert sequence == source_sequence or len(source_sequence) > length
     if len(source_sequence) > length:
-        ret = source_sequence[:(length - len(sequence))]+sequence
+        ret = source_sequence[len(source_sequence)-len(sequence)-(length-len(sequence)):
+                              len(source_sequence)-len(sequence)]+sequence
+
     else:
         assert sequence == source_sequence
         ret = (source_sequence * (int(length / len(sequence)) + 1))[:length]
