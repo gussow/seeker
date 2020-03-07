@@ -54,7 +54,7 @@ def handle_non_ATGC(sequence):
     """
     Handle non ATGCs.
     :param sequence: String input.
-    :return: String output (only ATCGs).
+    :return: String output (only ATCGs), with randomly assigned bp to non-ATGCs.
     """
     ret = re.sub('[^ATCG]', random_base, sequence)
     assert len(ret) == len(sequence)
@@ -64,14 +64,15 @@ def handle_non_ATGC(sequence):
 def pad_sequence(sequence, source_sequence, length=SEGMENT_LENGTH):
     """
     Pad sequence by repeating it.
-    :param sequence: Sequence to pad.
-    :param length: Length of sequence to pad until.
-    :return: New sequence.
+    :param sequence: Segmented sequence to pad.
+    :param source_sequence: Original, complete sequence.
+    :param length: Length of sequence to pad up to.
+    :return: Padded sequence of lenth length.
     """
     assert len(sequence) < length, len(sequence)
     assert sequence == source_sequence or len(source_sequence) > length
     if len(source_sequence) > length:
-        ret = sequence + source_sequence[:(length - len(sequence))]
+        ret = source_sequence[:(length - len(sequence))]+sequence
     else:
         assert sequence == source_sequence
         ret = (source_sequence * (int(length / len(sequence)) + 1))[:length]
@@ -81,10 +82,10 @@ def pad_sequence(sequence, source_sequence, length=SEGMENT_LENGTH):
 
 def frag2matrix(fragment, frag_max=SEGMENT_LENGTH):
     """
-    Convert sequence fragment to binary matrix.
+    Convert sequence fragment to one-hot binary matrix to use in model converted from Matlab.
     :param fragment: Sequence fragment to convert.
     :param frag_max: Fragment should be at most this length.
-    :return: Numpy matrix representing sequence.
+    :return: Numpy matrix representing one-hot encoded sequence.
     """
     assert len(fragment) <= frag_max
 
@@ -100,10 +101,10 @@ def frag2matrix(fragment, frag_max=SEGMENT_LENGTH):
 
 def frags2matrices(fragments, frag_max=SEGMENT_LENGTH):
     """
-    Convert list of sequence fragments to binary matrices.
+    Convert list of sequence fragments to one-hot binary matrices to use in model converted from Matlab.
     :param fragments: List of sequences to convert.
     :param frag_max: Fragments should be at most this length.
-    :return: Array of numpy matrices representing sequence.
+    :return: Array of numpy matrices representing one-hot encoded  sequence.
     """
     matrices = []
 
@@ -115,10 +116,10 @@ def frags2matrices(fragments, frag_max=SEGMENT_LENGTH):
 
 def encode_sequence(sequence, nuc_order=None):
     """
-    Encode a sequence for use in Python LSTM model.
+    Encode a sequence to integers for use in Python LSTM model.
     :param sequence: Sequence to encode.
     :param nuc_order: Order of nucleotides for encoding.
-    :return: Encoded sequence.
+    :return: Encoded sequence as integers.
     """
     if nuc_order is None:
         nuc_order = DEFAULT_NUC_ORDER
@@ -137,11 +138,11 @@ def encode_sequence(sequence, nuc_order=None):
 
 def encode_sequences(sequences, nuc_order=None, segment_length=SEGMENT_LENGTH):
     """
-    Encode a sequence for use in model.
+    Encode a sequence to integers for use in model.
     :param sequences: List of sequences to encode.
     :param nuc_order: Order of nucleotides for encoding.
     :param segment_length: Segments should be at most this length.
-    :return: Encoded sequence.
+    :return: Encoded sequence as integers.
     """
     encoded_seqs = []
     for sequence in sequences:
@@ -211,7 +212,8 @@ def segment_fasta(fasta, segment_lengths=SEGMENT_LENGTH):
 
 def convolute_scores(score, window_size=None):
     """
-    Returns a convolution of the score based on hann window.
+    Returns a convolution of the score with an average moving window.
+    :param score: scores to convolute.
     :param window_size: Window size for convolution.
     :return: Convolution in list format.
     """
@@ -226,12 +228,12 @@ def convolute_scores(score, window_size=None):
 def get_prophage_coords(sc, seq, phage_threshold=0.5, skip=50, edge=15000,
                         windsz=10, interval=SEGMENT_LENGTH, plenMN=0):
     """
-    Given a list of scores, return predicted prophage coordinates. Prophage parameters should be set according to users
-    needs.
+    Given a list of scores, return predicted prophage coordinates.
+    Prophage parameters should be set according to users needs.
 
     Parameters to modify sensitivity of detection:
-    :param sc: Scores.
-    :param seq: Sequence.
+    :param sc: list of scores assigned to segments of the sequence.
+    :param seq: Complete sequence.
     :param phage_threshold: Seeker threshold for phage selection
     :param skip: segments to skip to concatenate high confidence regions
     :param edge: sequence edges to add to high confidence region
@@ -316,8 +318,8 @@ class SeekerModel:
 
     def _score_fragments(self, fragments):
         """
-        Calculate a score for a list of 1000 nucleotide fragments denoting whether it is bacteria or phage.
-        :param fragments: List of 1000 nucleotide fragment, IE several strings of A, C, G, T with length 1000.
+        Assigns scores for a list of all 1000 nucleotide fragments denoting whether it is bacteria or phage.
+        :param fragments: List of all 1000 nucleotide fragment, IE several strings of A, C, G, T with length 1000.
         :return: Scores between 0 and 1, with 1 indicating phage and 0 indicating bacteria.
         """
         assert {len(x) for x in fragments} == {1000}
@@ -398,10 +400,33 @@ class SeekerFasta:
 
             yield eval_str.format(name=name, kingdom=kingdom, score=round(mean_score, 2))
 
+    def meta2fasta(self, out_fasta_path="seeker_phage_contigs.fa", threshold=0.8, filter_func=lambda x: x):
+        """
+        Saves contigs that are predicted as phages to a fasta file.
+
+        The default Seeker threshold is set to 0.8 to detect phages with high confidence. This patameter should be set
+        based on the user's specific goals.
+
+        :param out_fasta_path: path for the output Fasta file.
+        :param threshold: seeker threshold to use for phage prediction.
+        :param filter_func: custom function the user can use to filter specific contigs (E.g. circularity, length etc.)
+        """
+        orgname = (list(self.scores.keys()))
+        scores = [(list(self.scores.items()))[i][1].tolist() for i in range(len(self.scores.items()))]
+        msc = [sum(scores[i]) / len(scores[i]) for i in range(len(scores))]
+        predv = [i for i, j in enumerate(msc) if j > threshold]
+
+        with open(out_fasta_path, 'w') as faout:
+            for i in range(len(predv)):
+                fseq = "".join(self._seqs[orgname[predv[i]].replace('\n', '')])
+                if filter_func(fseq):
+                    faout.write('>'+orgname[predv[i]].replace('\n', '') + ', av_score: ' + str(msc[predv[i]]) +  '\n')
+                    faout.write(fseq + '\n')
+
     def save2bed(self, out_path,
                  phage_threshold=0.5, skip=50, edge=15000, windsz=10, interval=SEGMENT_LENGTH, plenMN=0):
         """
-        Saves prophage locations to bed file format. Prophage parameters should be set according to users needs.
+        Saves prophage coordinates to bed file format. Prophage parameters should be set according to users needs.
         :param out_path: Output path for BED.
         :param phage_threshold: Seeker threshold for phage selection
         :param skip: segments to skip to concatenate high confidence regions
@@ -453,26 +478,3 @@ class SeekerFasta:
                         ">{}:{}-{}\n{}".format(sequence_name, str(start), str(end), sequence),
                         file=faout
                     )
-
-    def meta2fasta(self, out_fasta_path="seeker_phage_contigs.fa", threshold=0.9, filter_func=lambda x: x):
-        """
-        Saves contigs that are predicted as phages.
-
-        The default Seeker threshold is 0.9 in order to detect highly secure phages, but this should be set based
-        on the user's specific goals.
-
-        :param out_fasta_path: path for the output Fasta file.
-        :param threshold: seeker threshold to use for phage prediction.
-        :param filter_func: custom function the user can use to filter specific contigs.
-        """
-        orgname = (list(self.scores.keys()))
-        scores = [(list(self.scores.items()))[i][1].tolist() for i in range(len(self.scores.items()))]
-        msc = [sum(scores[i]) / len(scores[i]) for i in range(len(scores))]
-        predv = [i for i, j in enumerate(msc) if j > threshold]
-
-        with open(out_fasta_path, 'w') as faout:
-            for i in range(len(predv)):
-                fseq = "".join(self._seqs[orgname[predv[i]].replace('\n', '')])
-                if filter_func(fseq):
-                    faout.write('>'+orgname[predv[i]].replace('\n', '') + ', av_score: ' + str(msc[predv[i]]) +  '\n')
-                    faout.write(fseq + '\n')
