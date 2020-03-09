@@ -21,11 +21,11 @@ def get_install_deps(deps=INSTALL_DEPS):
 
 
 with open("README.md", "r") as fh:
-    long_description = fh.read()
+    long_description = "".join(fh.readlines()[1:])
 
 setuptools.setup(
     name="seeker",
-    version="0.0.1",
+    version="0.0.5",
     author="Ayal B. Gussow, Noam Auslander",
     author_email="ayal.gussow@gmail.com, noamaus@gmail.com",
     description="Predict bacterial or phage sequence",
