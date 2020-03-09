@@ -406,7 +406,7 @@ class SeekerFasta:
         """
         Saves contigs that are predicted as phages to a fasta file.
 
-        The default Seeker threshold is set to 0.8 to detect phages with high confidence. This patameter should be set
+        The default Seeker threshold is set to 0.8 to detect phages with high confidence. This parameter should be set
         based on the user's specific goals.
 
         :param out_fasta_path: path for the output Fasta file.
