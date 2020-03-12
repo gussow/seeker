@@ -32,7 +32,7 @@ Conda provides an easy method to install Seeker. First, install conda or minicon
 
 Then run the following commands to install seeker:
 ```
-conda create --name seeker python=3.7 numpy=1.18 tensorflow=2.0.0 pip
+conda create --name seeker python=3.7 pip
 conda activate seeker
 pip install seeker
 ```
