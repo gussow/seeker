@@ -16,7 +16,9 @@ Seeker you need to use Python 3.6 or 3.7. Creating different Python environments
  
 
 ## Citation
-Seeker: Alignment free phage identification via a deep learning framework. <i>In Preparation.</i>
+[1]Noam Auslander*, Ayal B. Gussow1*#, Sean Benler, Yuri I. Wolf, Eugene V. Koonin# [Seeker: Alignment-free identification of bacteriophage genomes by deep learning](https://www.biorxiv.org/content/10.1101/2020.04.04.025783v1.full.pdf)
+(*) These authors contributed equally, (#) Corresponding authors
+
 
 ## Installation
 Seeker requires python3, and has been tested with python3.6 and python3.7. 
