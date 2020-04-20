@@ -87,7 +87,7 @@ seeker_fasta.meta2fasta(out_fasta_path="seeker_phage_contigs.fa", threshold=0.5)
 
 Alternatively, to predict prophages:
 ```
-seeker_fasta = SeekerFasta("input.fa", model="prophage")
+seeker_fasta = SeekerFasta("input.fa", LSTM_type="prophage")
 seeker_fasta.save2bed("output.bed")  # Save prophage coordinates to BED file
 seeker_fasta.save2fasta("output.fa")  # Save prophage sequences to Fasta file 
 ```
