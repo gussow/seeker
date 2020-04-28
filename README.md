@@ -65,7 +65,7 @@ The primary class in the Python library is SeekerFasta. SeekerFasta can load a F
 Seeker. SeekerFasta has the following parameters:
 
 1. path_or_str. Either a path to a Fasta or a Fasta string. 
-2. LSTM_type. Which LSTM implementation to use. Options are "python", "matlab", "prophage". Default is Python.
+2. LSTM_type. Which LSTM implementation to use. Options are "python", "matlab", "prophage" (not recommended). Default is Python.
 3. seeker_model. If you've already loaded a model into a SeekerModel object and prefer to use that model, you can
 provide it as a parameter here. Default is None, in which case the model will be loaded from file.  
 1. load_seqs. Whether to preload all Fasta sequences to memory. Default is True. 
@@ -91,7 +91,7 @@ seeker_fasta = SeekerFasta("input.fa", LSTM_type="prophage")
 seeker_fasta.save2bed("output.bed")  # Save prophage coordinates to BED file
 seeker_fasta.save2fasta("output.fa")  # Save prophage sequences to Fasta file 
 ```
-<em>NOTE</em>: The ideal prophage prediction parameters vary depending on the organism and the user's goals.
+<em>NOTE</em>: Seeker was not trained to predict prophages. The prophage model is the output of the first training step, that has been described in [1]. This model has not been tested thoroughly for prophage prediction, and its performance is affected by the prophage prediction parameters which depend on the organism and the user's goals. Due to this, the use of this model for prophage detection is not recommended, unless it is done as an initial filtering step. 
  
 ## LSTM Models
 The LSTM models can be found in the `models` directory. 
