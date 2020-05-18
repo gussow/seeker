@@ -402,7 +402,7 @@ class SeekerFasta:
 
             yield eval_str.format(name=name, kingdom=kingdom, score=round(mean_score, 2))
 
-    def meta2fasta(self, out_fasta_path="seeker_phage_contigs.fa", threshold=0.8, filter_func=lambda x: x):
+    def meta2fasta(self, out_fasta_path="seeker_phage_contigs.fa", threshold=0.8, filter_func=lambda x: x[0:15] in x[-100:-1]):
         """
         Saves contigs that are predicted as phages to a fasta file.
 
@@ -411,7 +411,7 @@ class SeekerFasta:
 
         :param out_fasta_path: path for the output Fasta file.
         :param threshold: seeker threshold to use for phage prediction.
-        :param filter_func: custom function the user can use to filter specific contigs (E.g. circularity, length etc.)
+        :param filter_func: custom function the user can use to filter specific contigs. The default is circularity.
         """
         orgname = (list(self.scores.keys()))
         scores = [(list(self.scores.items()))[i][1].tolist() for i in range(len(self.scores.items()))]
