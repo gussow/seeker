@@ -294,7 +294,7 @@ class SeekerModel:
     An instance of a sequence predictor that can differentiate bacterial DNA from phage DNA using python LSTM trained
     model.
     """
-    def __init__(self, LSTM_type="python", model_path=None,):
+    def __init__(self, LSTM_type="matlab", model_path=None,):
         """
         Initialize instance of Seeker. Loads model and sets sequence prep function.
         :param LSTM_type: Which model to use. Python, Matlab or prophage.
