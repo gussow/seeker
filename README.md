@@ -65,7 +65,7 @@ The primary class in the Python library is SeekerFasta. SeekerFasta can load a F
 Seeker. SeekerFasta has the following parameters:
 
 1. path_or_str. Either a path to a Fasta or a Fasta string. 
-2. LSTM_type. Which LSTM implementation to use. Options are "python", "matlab", "prophage" (not recommended). Default is Python.
+2. LSTM_type. Which LSTM implementation to use. Options are "python", "matlab", "prophage" (not recommended). Default is Matlab.
 3. seeker_model. If you've already loaded a model into a SeekerModel object and prefer to use that model, you can
 provide it as a parameter here. Default is None, in which case the model will be loaded from file.  
 1. load_seqs. Whether to preload all Fasta sequences to memory. Default is True. 
