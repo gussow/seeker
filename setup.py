@@ -10,7 +10,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="seeker",
-    version="1.0.1",
+    version="1.0.2",
     author="Ayal B. Gussow, Noam Auslander",
     author_email="ayal.gussow@gmail.com, noamaus@gmail.com",
     description="Predict bacterial or phage sequence",
