@@ -99,6 +99,9 @@ The LSTM models can be found in the `models` directory.
 1. MatModel0.h5. Metagenome LSTM model, trained in matlab.
 1. MatModePRO.h5. Prophage LSTM model, trained in matlab.
 
+## Datasets 
+Training, validation and test datasets are available from:
+ftp://ftp.ncbi.nih.gov/pub/wolf/_suppl/Seeker/
 
 ## Contact
 If you run into any issues or have any questions, feel free to open an issue on Github or email us 
