@@ -16,7 +16,7 @@ Seeker you need to use Python 3.6 or 3.7. Creating different Python environments
  
 
 ## Citation
-[1]Noam Auslander*, Ayal B. Gussow1*#, Sean Benler, Yuri I. Wolf, Eugene V. Koonin# [Seeker: Alignment-free identification of bacteriophage genomes by deep learning](https://www.biorxiv.org/content/10.1101/2020.04.04.025783v1.full.pdf)
+[1]Noam Auslander*, Ayal B. Gussow1*#, Sean Benler, Yuri I. Wolf, Eugene V. Koonin# [Seeker: Alignment-free identification of bacteriophage genomes by deep learning](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa856/5921300) Nucleic Acid Research, October 2020.
 (*) These authors contributed equally, (#) Corresponding authors
 
 
